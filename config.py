@@ -11,8 +11,7 @@ logger = logging.getLogger()
 def create_api():
     auth = tweepy.OAuthHandler(sk.consumer_key, sk.consumer_secret)
     auth.set_access_token(sk.access_token, sk.access_token_secret)
-    api = tweepy.API(auth, wait_on_rate_limit=True,
-                        wait_on_rate_limit_notify=True)
+    api = tweepy.API(auth, wait_on_rate_limit=True)
     try:
         api.verify_credentials()
     except Exception as e:
