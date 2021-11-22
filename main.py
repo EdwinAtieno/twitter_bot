@@ -1,11 +1,14 @@
+from config import create_api
 import tweepy
+import secretskeys as sk
+class IDPrinter(tweepy.Stream):
 
-# Authenticate to Twitter
+    def on_status(self, status):
+        print(status.id)
 
-api = tweepy.API(auth)
-
-try:
-    api.verify_credentials()
-    print("Authentication OK")
-except:
-    print("Error during authentication")
+api = create_api()
+printer = IDPrinter(
+    sk.consumer_key, sk.consumer_secret,
+    sk.access_token, sk.access_token_secret
+)
+printer.sample()

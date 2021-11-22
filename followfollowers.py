@@ -8,6 +8,7 @@ logger = logging.getLogger()
 
 def follow_followers(api):
     logger.info("Retrieving and following followers")
+    api.update_status("Look, I'm tweeting from #Python in my #earthanalytics class! @eddymzae1")
     for follower in tweepy.Cursor(api.get_followers).items():
         if not follower.following:
             logger.info(f"Following {follower.name}")
