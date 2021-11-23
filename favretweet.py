@@ -2,7 +2,6 @@ import tweepy
 import logging
 from config import create_api
 import json
-import secretskeys as sk
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -10,12 +9,11 @@ logger = logging.getLogger()
 class FavRetweetListener(tweepy.Stream):
     def __init__(self, api):
         self.api = api
-        self.me = api.me()
+
 
     def on_status(self, tweet):
         logger.info(f"Processing tweet id {tweet.id}")
-        if tweet.in_reply_to_status_id is not None or \
-            tweet.user.id == self.me.id:
+        if tweet.in_reply_to_status_id is not None:
             # This tweet is a reply or I'm its author so, ignore it
             return
         if not tweet.favorited:
@@ -34,12 +32,11 @@ class FavRetweetListener(tweepy.Stream):
     def on_error(self, status):
         logger.error(status)
 
-def main():
+def main(keywords):
     api = create_api()
     tweets_listener = FavRetweetListener(api)
-    stream = tweepy.Stream(sk.consumer_key, sk.consumer_secret,
-    sk.access_token, sk.access_token_secret, tweets_listener)
-    stream.filter(track="men", languages=["en"])
+    stream = tweepy.Stream(api.auth, tweets_listener)
+    stream.filter(track=keywords, languages=["en"])
 
 if __name__ == "__main__":
-    main()
+    main(["Python", "Tweepy"])
