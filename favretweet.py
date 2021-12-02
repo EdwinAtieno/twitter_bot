@@ -6,14 +6,15 @@ import json
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-class FavRetweetListener(tweepy.Stream):
+class FavRetweetListener(tweepy.StreamListener):
     def __init__(self, api):
         self.api = api
-
+        self.me = api.me()
 
     def on_status(self, tweet):
         logger.info(f"Processing tweet id {tweet.id}")
-        if tweet.in_reply_to_status_id is not None:
+        if tweet.in_reply_to_status_id is not None or \
+            tweet.user.id == self.me.id:
             # This tweet is a reply or I'm its author so, ignore it
             return
         if not tweet.favorited:
@@ -39,4 +40,4 @@ def main(keywords):
     stream.filter(track=keywords, languages=["en"])
 
 if __name__ == "__main__":
-    main(["Python", "Tweepy"])
+    main(["Tech"])
